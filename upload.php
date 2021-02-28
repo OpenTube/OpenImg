@@ -9,13 +9,16 @@ if (!is_dir(IMAGE_DIR)) {
     return;
 }
 
-function upload_image($type) {
-    $target_file = IMAGE_DIR . '/' . basename($_FILES[$type]["name"]);
+function upload_image() {
+    if (!$_FILES['file']) {
+        return;
+    }
+    $target_file = IMAGE_DIR . '/' . basename($_FILES['file']["name"]);
     $uploadOk = 1;
     $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
     // Check if image file is a actual image or fake image
     if(isset($_POST["submit"])) {
-        $check = getimagesize($_FILES[$type]["tmp_name"]);
+        $check = getimagesize($_FILES['file']["tmp_name"]);
         if($check !== false) {
             echo "File is an image - " . $check["mime"] . ".";
             $uploadOk = 1;
@@ -32,8 +35,8 @@ function upload_image($type) {
     }
 
     // Check file size
-    if ($_FILES[$type]["size"] > MAX_FILE_SIZE) {
-        echo "Sorry, your file is too large. (" . $_FILES[$type]["size"] . "/" . MAX_FILE_SIZE . ")";
+    if ($_FILES['file']["size"] > MAX_FILE_SIZE) {
+        echo "Sorry, your file is too large. (" . $_FILES['file']["size"] . "/" . MAX_FILE_SIZE . ")";
         $uploadOk = 0;
     }
 
@@ -49,8 +52,8 @@ function upload_image($type) {
         echo "Sorry, your file was not uploaded.";
         // if everything is ok, try to upload file
     } else {
-        if (move_uploaded_file($_FILES[$type]["tmp_name"], $target_file)) {
-            $fileName = basename($_FILES[$type]["name"]);
+        if (move_uploaded_file($_FILES['file']["tmp_name"], $target_file)) {
+            $fileName = basename($_FILES['file']["name"]);
             $fileName = htmlspecialchars($fileName);
             echo 'The file <a href="/' . IMAGE_DIR . '/' . $fileName . '">' . htmlspecialchars($fileName) . '</a> has been uploaded.';
         } else {
@@ -59,13 +62,7 @@ function upload_image($type) {
     }
 }
 
-if ($_FILES['form-file']) {
-    echo "form '" . $_FILES['form-file']['name'] . "'";
-    upload_image('form-file');
-} else if ($_FILES['file']) {
-    upload_image('file');
-    echo "file '" . $_FILES['file']['name'] . "'";
-}
+upload_image();
 
 ?>
 
