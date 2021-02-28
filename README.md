@@ -11,3 +11,9 @@ Simple php image upload and hosting service
 
     curl -F 'file=@image.png;type=image/png' http://localhost:8080/upload.php
 
+### max image size
+
+If you get an unexpected error when uploading a file.
+Try checking this line in your php.ini
+
+	upload_max_filesize = 8M

@@ -17,6 +17,19 @@ if (!is_dir(IMAGE_DIR)) {
     return;
 }
 
+function verbose_error() {
+    echo '<code style="white-space: pre;">';
+    $inipath = php_ini_loaded_file();
+    if ($inipath) {
+        echo 'Loaded php.ini: ' . $inipath . '<br>';
+    } else {
+        echo 'A php.ini file is not loaded<br>';
+    }
+    echo 'upload_max_filesize: ' . ini_get('upload_max_filesize') . '<br>';
+    print_r($_FILES['file']);
+    echo '</code>';
+}
+
 function upload_image() {
     if (!$_FILES['file']) {
         return;
@@ -57,7 +70,8 @@ function upload_image() {
 
     // Check if $uploadOk is set to 0 by an error
     if ($uploadOk == 0) {
-        echo "Sorry, your file was not uploaded.";
+        echo 'Sorry, your file was not uploaded.<br>';
+        verbose_error();
         // if everything is ok, try to upload file
     } else {
         if (move_uploaded_file($_FILES['file']["tmp_name"], $target_file)) {
@@ -66,6 +80,7 @@ function upload_image() {
             echo 'The file <a href="/' . IMAGE_DIR . '/' . $fileName . '">' . htmlspecialchars($fileName) . '</a> has been uploaded.';
         } else {
             echo "Sorry, there was an error uploading your file.";
+            verbose_error();
         }
     }
 }
