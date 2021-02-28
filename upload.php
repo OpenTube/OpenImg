@@ -1,8 +1,16 @@
 
 <?php
+
+const MAX_FILE_SIZE = 5000000;
+const IMAGE_DIR = 'i';
+
+if (!is_dir(IMAGE_DIR)) {
+    mkdir(IMAGE_DIR, 0777, true);
+    return;
+}
+
 function upload_image($type) {
-    $target_dir = "uploads/";
-    $target_file = $target_dir . basename($_FILES[$type]["name"]);
+    $target_file = IMAGE_DIR . '/' . basename($_FILES[$type]["name"]);
     $uploadOk = 1;
     $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
     // Check if image file is a actual image or fake image
@@ -24,8 +32,8 @@ function upload_image($type) {
     }
 
     // Check file size
-    if ($_FILES[$type]["size"] > 500000) {
-        echo "Sorry, your file is too large.";
+    if ($_FILES[$type]["size"] > MAX_FILE_SIZE) {
+        echo "Sorry, your file is too large. (" . $_FILES[$type]["size"] . "/" . MAX_FILE_SIZE . ")";
         $uploadOk = 0;
     }
 
@@ -42,7 +50,9 @@ function upload_image($type) {
         // if everything is ok, try to upload file
     } else {
         if (move_uploaded_file($_FILES[$type]["tmp_name"], $target_file)) {
-            echo "The file ". htmlspecialchars( basename( $_FILES[$type]["name"])). " has been uploaded.";
+            $fileName = basename($_FILES[$type]["name"]);
+            $fileName = htmlspecialchars($fileName);
+            echo 'The file <a href="/' . IMAGE_DIR . '/' . $fileName . '">' . htmlspecialchars($fileName) . '</a> has been uploaded.';
         } else {
             echo "Sorry, there was an error uploading your file.";
         }
@@ -50,11 +60,11 @@ function upload_image($type) {
 }
 
 if ($_FILES['form-file']) {
-    echo "form '" . $_FILES['form-file'] . "'";
+    echo "form '" . $_FILES['form-file']['name'] . "'";
     upload_image('form-file');
 } else if ($_FILES['file']) {
     upload_image('file');
-    echo "file '" . $_FILES['file'] . "'";
+    echo "file '" . $_FILES['file']['name'] . "'";
 }
 
 ?>
