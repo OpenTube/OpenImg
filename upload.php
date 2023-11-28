@@ -76,7 +76,7 @@ function upload_image() {
         echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
         $uploadOk = 0;
     }
-    dbg("file type: " + $imageFileType);
+    dbg("file type: " . $imageFileType);
 
     // Check if $uploadOk is set to 0 by an error
     if ($uploadOk == 0) {
