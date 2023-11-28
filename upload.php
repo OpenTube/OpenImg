@@ -31,6 +31,10 @@ function verbose_error() {
     echo '</code>';
 }
 
+function dbg($msg) {
+    echo "<div>[DEBUG] $msg</div>";
+}
+
 function upload_image() {
     if (!$_FILES['file']) {
         return;
@@ -48,6 +52,9 @@ function upload_image() {
             echo "File is not an image.";
             $uploadOk = 0;
         }
+        dbg("tmp name: " . $_FILES['file']["tmp_name"]);
+    } else {
+        dbg("submit is empty");
     }
 
     // Check if file already exists
@@ -61,6 +68,7 @@ function upload_image() {
         echo "Sorry, your file is too large. (" . $_FILES['file']["size"] . "/" . MAX_FILE_SIZE . ")";
         $uploadOk = 0;
     }
+    dbg("file size: " . $_FILES['file']["size"]);
 
     // Allow certain file formats
     if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
@@ -68,6 +76,7 @@ function upload_image() {
         echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
         $uploadOk = 0;
     }
+    dbg("file type: " + $imageFileType);
 
     // Check if $uploadOk is set to 0 by an error
     if ($uploadOk == 0) {
