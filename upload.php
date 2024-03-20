@@ -44,7 +44,12 @@ function check_if_valid_image() {
             dbg('$_FILES:');
             print_r($_FILES);
             dbg("warning file tmp_name not found!");
-            return 0;
+            dbg("using 'name' instead ...");
+            $tmp_img_name = $_FILES['file']["name"];
+            if(!$tmp_img_name) {
+                dbg("Error: name not found either");
+                return 0;
+            }
         }
         $check = getimagesize($tmp_img_name);
         if($check !== false) {
