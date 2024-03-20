@@ -35,6 +35,32 @@ function dbg($msg) {
     echo "<div>[DEBUG] $msg</div>";
 }
 
+// returns 1 on ok
+// returns 0 on error
+function check_if_valid_image() {
+    if(isset($_POST["submit"])) {
+        $tmp_img_name = $_FILES['file']["tmp_name"];
+        if (!$tmp_img_name) {
+            dbg('$_FILES:');
+            print_r($_FILES);
+            dbg("warning file tmp_name not found!");
+            return 0;
+        }
+        $check = getimagesize($tmp_img_name);
+        if($check !== false) {
+            dbg("File is an image - " . $check["mime"] . ".");
+            return 1;
+        } else {
+            dbg("File is not an image.");
+            return 0;
+        }
+        dbg("tmp name: " . $tmp_img_name);
+    } else {
+        dbg("submit is empty");
+    }
+    return 1;
+}
+
 function upload_image() {
     if (!$_FILES['file']) {
         return;
@@ -43,19 +69,7 @@ function upload_image() {
     $uploadOk = 1;
     $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
     // Check if image file is a actual image or fake image
-    if(isset($_POST["submit"])) {
-        $check = getimagesize($_FILES['file']["tmp_name"]);
-        if($check !== false) {
-            echo "File is an image - " . $check["mime"] . ".";
-            $uploadOk = 1;
-        } else {
-            echo "File is not an image.";
-            $uploadOk = 0;
-        }
-        dbg("tmp name: " . $_FILES['file']["tmp_name"]);
-    } else {
-        dbg("submit is empty");
-    }
+    $uploadOk = check_if_valid_image();
 
     // Check if file already exists
     if (file_exists($target_file)) {
